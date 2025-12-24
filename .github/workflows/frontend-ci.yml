@@ -1,0 +1,33 @@
+name: Frontend CI
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "my-frontend-app/**"
+
+jobs:
+  frontend-ci:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: my-frontend-app
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: npm test -- --watch=false --passWithNoTests
+
+      - name: Build frontend
+        run: CI=false npm run build

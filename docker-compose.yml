@@ -1,0 +1,47 @@
+version: "3.9"  # Compose file format version. 3.9 is compatible with modern Docker versions.
+
+services:  # Define all services (containers) in your app.
+
+  backend:  # Backend service (Node.js app)
+    build:  # Build the image for this service
+      context: ./my-backend-app  # Directory containing the Dockerfile and backend code
+      dockerfile: Dockerfile.dev  # Dockerfile to use for building this image
+    image: backend-dev  # Name/tag of the built image
+    ports:
+      - "4000:4000"   # Map container port 4000 to host port 4000 (backend API)
+      - "9229:9229"   # Map debugger port 9229 for remote debugging Node.js
+    volumes:
+      - ./my-backend-app:/app            # Mount backend code into container for hot reload
+      - /app/node_modules                # Keep node_modules inside container (avoid host overwrite)
+    env_file:
+      - ./my-backend-app/.env            # Load environment variables from .env file
+    command: npm run dev                 # Command to run inside container (dev mode with hot reload)
+    depends_on:
+      - mongo                            # Ensure mongo container starts before backend
+
+  frontend:  # Frontend service (React app)
+    build:
+      context: ./my-frontend-app        # Directory containing the frontend Dockerfile
+      dockerfile: Dockerfile.dev        # Dockerfile for frontend dev image
+    image: cra-dev                      # Name/tag of the frontend image
+    ports:
+      - "3000:3000"                     # Map container port 3000 to host port 3000
+    volumes:
+      - ./my-frontend-app:/app          # Mount frontend code into container for hot reload
+      - /app/node_modules               # Keep node_modules inside container
+    env_file:
+      - ./my-frontend-app/.env          # Load frontend environment variables
+    command: npm start                   # Command to run React app in dev mode
+    depends_on:
+      - backend                          # Ensure backend container starts before frontend
+
+  mongo:  # MongoDB service
+    image: mongo:7.0                    # Use official MongoDB image version 7.0
+    container_name: mongo               # Set container name to "mongo"
+    ports:
+      - "27018:27017"                   # Expose MongoDB port to host (so Node & Compass can connect)
+    volumes:
+      - mongo-data:/data/db             # Mount a named volume for persistent MongoDB data
+
+volumes:  # Define Docker volumes for persistent storage
+  mongo-data:  # Named volume for MongoDB data

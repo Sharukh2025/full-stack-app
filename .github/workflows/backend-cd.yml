@@ -1,0 +1,32 @@
+name: Backend CD (Render)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  backend-cd:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy backend to Render
+        env:
+          RENDER_PROD_HOOK: ${{ secrets.RENDER_PROD_HOOK }}
+          RENDER_STAGING_HOOK: ${{ secrets.RENDER_STAGING_HOOK }}
+          RENDER_DEV_HOOK: ${{ secrets.RENDER_DEV_HOOK }}
+        run: |
+          BRANCH="${GITHUB_REF##*/}"
+          echo "Deploying backend from branch: $BRANCH"
+
+          if [ "$BRANCH" = "production" ]; then
+            curl -X POST "$RENDER_PROD_HOOK"
+
+          elif [ "$BRANCH" = "staging" ]; then
+            curl -X POST "$RENDER_STAGING_HOOK"
+
+          elif [ "$BRANCH" = "development" ]; then
+            curl -X POST "$RENDER_DEV_HOOK"
+
+          else
+            echo "No backend deployment configured for branch: $BRANCH"
+            exit 1
+          fi

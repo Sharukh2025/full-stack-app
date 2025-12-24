@@ -1,0 +1,23 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Testing
+coverage
+
+# Production build
+build
+dist
+.next
+.out
+.vite/
+
+# Framework caches
+.nuxt
+.vuepress/dist
+.svelte-kit/
+.docusaurus
+
+# Misc
+.DS_Store
