@@ -3,8 +3,17 @@ name: Frontend CI & CD (Vercel)
 on:
   workflow_dispatch:
   push:
+    branches:
+      - production
+      - staging
+      - development
     paths:
       - "my-frontend-app/**"
+  pull_request:
+    branches:
+      - production
+      - staging
+      - development
 
 jobs:
   frontend-ci:
@@ -51,6 +60,11 @@ jobs:
         run: |
           BRANCH="${GITHUB_REF##*/}"
           echo "Deploying frontend from branch: $BRANCH"
+
+          if [ "$BRANCH" = "development" ]; then
+            echo "Skipping deployment for development branch."
+            exit 0
+          fi
 
           if [ "$BRANCH" = "production" ]; then
             vercel --prod --confirm --token=$VERCEL_TOKEN

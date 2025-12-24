@@ -1,0 +1,20 @@
+# Ignore Git files
+.git
+.gitignore
+
+# Ignore node_modules in root (if any)
+node_modules
+
+# Ignore GitHub workflows
+.github
+
+# Ignore log files and temp files
+*.log
+*.tmp
+*.swp
+
+# Ignore Docker Compose override files
+docker-compose.override.yml
+
+# Ignore local environment files
+.env

@@ -3,11 +3,21 @@ name: Backend CI
 on:
   workflow_dispatch:
   push:
+    branches:
+      - production
+      - staging
+      - development
     paths:
       - "my-backend-app/**"
+  pull_request:
+    branches:
+      - production
+      - staging
+      - development
 
 jobs:
   backend-ci:
+    name: Backend CI
     runs-on: ubuntu-latest
 
     defaults:

@@ -3,8 +3,15 @@ name: Frontend CI
 on:
   workflow_dispatch:
   push:
-    paths:
-      - "my-frontend-app/**"
+    branches:
+      - production
+      - staging
+      - development
+  pull_request:
+    branches:
+      - production
+      - staging
+      - development
 
 jobs:
   frontend-ci:
