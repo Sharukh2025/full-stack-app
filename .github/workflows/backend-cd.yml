@@ -1,14 +1,21 @@
 name: Backend CD (Render)
 
 on:
-  workflow_dispatch:
+  workflow_dispatch:  # manual trigger only
 
 jobs:
   backend-cd:
     name: Backend CD
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        working-directory: my-backend-app  # ensures only backend folder is deployed
+
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Deploy backend to Render
         env:
           RENDER_PROD_HOOK: ${{ secrets.RENDER_PROD_HOOK }}
@@ -17,11 +24,13 @@ jobs:
           BRANCH="${GITHUB_REF##*/}"
           echo "Deploying backend from branch: $BRANCH"
 
+          # Skip development branch
           if [ "$BRANCH" = "development" ]; then
             echo "Skipping deployment for development branch."
             exit 0
           fi
 
+          # Deploy production or staging
           if [ "$BRANCH" = "production" ]; then
             curl -X POST "$RENDER_PROD_HOOK"
           elif [ "$BRANCH" = "staging" ]; then

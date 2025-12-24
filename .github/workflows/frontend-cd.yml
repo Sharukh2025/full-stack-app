@@ -7,6 +7,10 @@ jobs:
   frontend-cd:
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        working-directory: my-frontend-app  # ensures only this folder is deployed
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -21,11 +25,13 @@ jobs:
           BRANCH="${GITHUB_REF##*/}"
           echo "Deploying frontend from branch: $BRANCH"
 
+          # Skip deployment for development branch
           if [ "$BRANCH" = "development" ]; then
             echo "Skipping deployment for development branch."
             exit 0
           fi
 
+          # Deploy production or staging
           if [ "$BRANCH" = "production" ]; then
             vercel --prod --confirm --token=$VERCEL_TOKEN
           else

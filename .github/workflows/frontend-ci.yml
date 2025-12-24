@@ -7,11 +7,15 @@ on:
       - production
       - staging
       - development
+    paths:
+      - "my-frontend-app/**"
   pull_request:
     branches:
       - production
       - staging
       - development
+    paths:
+      - "my-frontend-app/**"
 
 jobs:
   frontend-ci:

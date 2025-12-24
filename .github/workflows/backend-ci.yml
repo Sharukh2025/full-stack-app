@@ -1,19 +1,21 @@
 name: Backend CI
 
 on:
-  workflow_dispatch:
+  workflow_dispatch:   # manual trigger
   push:
     branches:
       - production
       - staging
       - development
     paths:
-      - "my-backend-app/**"
+      - "my-backend-app/**"  # trigger only if backend files change
   pull_request:
     branches:
       - production
       - staging
       - development
+    paths:
+      - "my-backend-app/**"  # trigger only if backend files change
 
 jobs:
   backend-ci:
@@ -22,7 +24,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: my-backend-app
+        working-directory: my-backend-app  # CI runs only in backend folder
 
     steps:
       - name: Checkout repository
